@@ -5,20 +5,9 @@ EFI_SYSTEM_TABLE *gST;
 EFI_HANDLE gImage;
 fsl_efi *_FSLEFI_ = NULL;
 u16 *SYSTEM_USER_NAME = NULL;
+EFI_GRAPHICS_OUTPUT_PROTOCOL *vGop;
 #define CPU_HZ 3000000000ULL
 #define BLINK_INTERVAL (CPU_HZ)
-
-/* Some basic font */
-uint8_t font_A[8] = {
-    0b00111100,
-    0b01000010,
-    0b01000010,
-    0b01111110,
-    0b01000010,
-    0b01000010,
-    0b01000010,
-    0b00000000
-};
 
 CHAR16 BANNER[] = L"These commands are provided by the OS!\r\n"
                 L"     Name          Description\r\n"
@@ -61,25 +50,33 @@ public fn EFIAPI Init_FSL(EFI_SYSTEM_TABLE *SystemTable, EFI_HANDLE ImageHandle)
     print_args((string []){L"\r\nWelcome to FSL OS, ", (string)SYSTEM_USER_NAME, L"\r\n", NULL});
 
     println(L"[ + ] Loading FSL CLI.....");
-
-    /* A Cursor Blinker thats way blinks way to fast rn, fuck that */
-    // EFI_EVENT TimerEvent;
-    // gBS->CreateEvent(EVT_TIMER | EVT_NOTIFY_SIGNAL,
-    //                 TPL_CALLBACK,
-    //                 blink_cursor,
-    //                 NULL,
-    //                 &TimerEvent);
-
-    // gBS->SetTimer(TimerEvent, TimerPeriodic, 5000000);
     clear_screen(_FSLEFI_, 0x00000000);
+
+    // vertical line
+    int end = _FSLEFI_->resolution.x - 10;
+    for(int x = 30; x < end; x++)
+        draw_pixel(0, 0, 40, x, 0x00211832);
     
-    /* Just some top bar shit */
-    for(int y = 0; y < 30; y++)
-        for(int x = 0; x < _FSLEFI_->resolution.x; x++)
-            draw_pixel(_FSLEFI_, x, y, 0x00211832);
-            
-    draw_char(_FSLEFI_, 50, 50, font_A, 0x00FF0000);
+    create_task_bar(_FSLEFI_->fb);
+    // A font
+    int bitcount = 0;
+    for(int y = 80; y < 80+7; y++, bitcount++)
+	{
+		for(int x = 30, bit = 8; x < 30 + 8; x++, bit--)
+			if((a_font_bitmap[bitcount] >> bit) & 0xFF != 0)
+				draw_pixel(0, 0, x, y, 0x00535f46);
+	}
+
     // fsl_cli();
+}
+
+public fn create_task_bar(fb_t fb)
+{
+	/* Taskbar */
+    // end = _FSLEFI_->resolution.y - 5;
+    for(int y = 0; y < _FSLEFI_->resolution.y; y++)
+        for(int x = 10; x < 40; x++)
+            draw_pixel(0, 0, y, x, 0x00535f46);
 }
 
 public fn clear_screen(fsl_efi *fsl, uint32_t color)
@@ -143,26 +140,36 @@ public fn switch_to_gui_mode(fsl_efi *fsl)
     };
 
     gST->ConOut->EnableCursor(gST->ConOut, FALSE);
-    gST->ConOut->ClearScreen(gST->ConOut);   
+    gST->ConOut->ClearScreen(gST->ConOut); 
+    
+    UINTN stride = Gop->Mode->Info->PixelsPerScanLine;
+    vGop = Gop;
+    int base_x = 50;
+    int base_y = 50;
+
+    for(int row=0; row<8; row++)
+        for(int col=0; col<8; col++)
+            _FSLEFI_->framebuffer[(base_y + row) * stride + (base_x + col)] = 0x00FF0000; // red  
 }
 
-void draw_char(fsl_efi *fsl, int x, int y, uint8_t *bitmap, uint32_t color) {
-    for(int row = 0; row < 8; row++) {
-        for(int col = 0; col < 8; col++) {
-            if(bitmap[row] & (1 << (7 - col)))
-                draw_pixel(fsl, x + col, y + row, color);
-        }
-    }
+// 8x8 Bitfield
+// fb, position_x, position_y, bitmap width, bitmap height, bitmap
+public fn add_font_bitmap(fb_t fb, int at_x, int at_y, int col, int rows, u64 bitmap[restrict rows])
+{
+	int end_row = at_y + rows;
+	int end_col = at_x + col;
+	int bitcount = 0;
+	for(int y = at_y; y < end_row; y++, bitcount++)
+	{
+		for(int x = at_x, bit = 8; x < end_col; x++, bit--)
+			if((bitmap[bitcount] >> bit) & 0xFF != 0)
+				draw_pixel(0, 0, x, y, 0x00535f46);
+	}
 }
 
-void draw_big_pixel(fsl_efi *fsl, int x, int y, uint32_t color, int scale) {
-    for(int dy = 0; dy < scale; dy++)
-        for(int dx = 0; dx < scale; dx++)
-            draw_pixel(fsl, x*scale + dx, y*scale + dy, color);
-}
-
-void draw_pixel(fsl_efi *fsl, int x, int y, uint32_t color) {
-    fsl->framebuffer[y * fsl->resolution.x + x] = color;
+void draw_pixel(int at_x, int at_y, int x, int y, uint32_t color) {
+    UINTN stride = vGop->Mode->Info->PixelsPerScanLine;
+    _FSLEFI_->framebuffer[(at_y + y) * stride + (at_x + x)] = color;
 }
 
 // public fn read_usb_drive()

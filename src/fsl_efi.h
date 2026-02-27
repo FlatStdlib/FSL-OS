@@ -1,8 +1,10 @@
 #pragma once
 
 #include "libc/efi_libc.h"
+#include "libgfb/gfb.h"
 #include "fs/fs.h"
 
+#include "../third_party_libs/fonts/test.h"
 #ifndef _FSL_EFI_H
     #define _FSL_EFI_H
     #define _FSL_EFI_FS_H
@@ -11,6 +13,7 @@
 extern EFI_HANDLE gImage;
 extern EFI_BOOT_SERVICES *gBS;
 extern EFI_SYSTEM_TABLE *gST;
+extern EFI_GRAPHICS_OUTPUT_PROTOCOL *Gop;
 
 typedef struct {
     int x, y;
@@ -39,6 +42,7 @@ typedef struct {
     /* Main HDD/USB FS */
     drive_t         hdd_handle;
 
+    fb_t            fb;
     u32             *framebuffer;
     screen_size     resolution;
 
@@ -57,12 +61,15 @@ typedef struct {
 extern fsl_efi *_FSLEFI_;
 public fn EFIAPI Init_FSL(EFI_SYSTEM_TABLE *SystemTable, EFI_HANDLE ImageHandle);
 public fn switch_to_gui_mode();
+void uefi_pixel_fn(int x, int y, void *color, void *user_data);
 public fn clear_screen(fsl_efi *fsl, uint32_t color);
 void draw_char(fsl_efi *fsl, int x, int y, uint8_t *bitmap, uint32_t color);
-void draw_pixel(fsl_efi *fsl, int x, int y, uint32_t color);
+public fn add_font_bitmap(fb_t fb, int at_x, int at_y, int col, int rows, u64 bitmap[restrict rows]);
+void draw_pixel(int at_x, int at_y, int x, int y, uint32_t color);
 public fn read_usb_drive();
 public fn input_strip(const string buff, int *size);
 private inline UINT64 rdtsc(void);
 public fn blink_cursor();
 public string  get_line(const string buffer);
 public fn fsl_cli();
+public fn create_task_bar(fb_t fb);

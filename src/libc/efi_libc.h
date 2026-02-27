@@ -8,6 +8,7 @@ extern int __FSL_DEBUG__;
         #define _FSL_MEM_H
         #define _FSL_CHAR_H
         #define _FSL_STRING_H
+		#define _FSL_ARR_H
 		#define _FSL_MAP_H
         #define _FSL_INTERNAL_H
         #define _FSL_ALLOCATOR_H
@@ -349,6 +350,12 @@ extern u16                      _OUTPUT_[1024];
 	public string 	        float_to_str(double n, char *out, int precision);
 #endif
 
+#ifdef _FSL_ARR_H
+	public array 	init_array(void);
+	public array	array_append(array arr, ptr p);
+	public int 		array_contains_ptr(array arr, ptr p);
+	public int 		array_contains_str(array arr, string needle);
+#endif
 
 #ifdef _FSL_MAP_H
         typedef struct {
