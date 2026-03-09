@@ -65,6 +65,9 @@ extern u64 w_font_bitmap[];
 extern u64 x_font_bitmap[];
 extern u64 y_font_bitmap[];
 extern u64 z_font_bitmap[];
+extern u64 space_font_bitmap[];
+extern u64 hashtag_font_bitmap[];
+extern u64 h_fat_font_bitmap[];
 
 public fb_t init_fb();
 public u32 create_pixel(u8 fg, u8 bg, u8 pixel);

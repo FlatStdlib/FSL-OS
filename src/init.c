@@ -13,9 +13,12 @@ CHAR16 BANNER[] = L"These commands are provided by the OS!\r\n"
                 L"     Name          Description\r\n"
                 L"__________________________________________\r\n"
                 L"     help          List of help commands\r\n"
+                L"     ls            List Files\r\n"
+                L"     hdd           Hard Drive Info\r\n"
+                L"     drives        List Drives\r\n"
                 L"     set           Set a system variable\r\n"
                 L"     echo          Echo a system variable\r\n"
-                L"     listdr        List all I/O Drives\r\n";
+                L"     list          List All System Variables\r\n";
 
 public fn fsl_cli();
 __declspec(dllexport) public fn EFIAPI Init_FSL(EFI_SYSTEM_TABLE *SystemTable, EFI_HANDLE ImageHandle);
@@ -53,30 +56,72 @@ public fn EFIAPI Init_FSL(EFI_SYSTEM_TABLE *SystemTable, EFI_HANDLE ImageHandle)
     clear_screen(_FSLEFI_, 0x00000000);
 
     // vertical line
-    int end = _FSLEFI_->resolution.x - 10;
-    for(int x = 30; x < end; x++)
-        draw_pixel(0, 0, 40, x, 0x00211832);
+    // int end = _FSLEFI_->resolution.x - 10;
+    // for(int x = 30; x < end; x++)
+    //     draw_pixel(0, 0, 40, x, 0x00211832);
     
     create_task_bar(_FSLEFI_->fb);
-    // A font
-    int bitcount = 0;
-    for(int y = 80; y < 80+7; y++, bitcount++)
-	{
-		for(int x = 30, bit = 8; x < 30 + 8; x++, bit--)
-			if((a_font_bitmap[bitcount] >> bit) & 0xFF != 0)
-				draw_pixel(0, 0, x, y, 0x00535f46);
-	}
+
+    u64 *wlc_msg[] = {
+        f_font_bitmap,
+        s_font_bitmap,
+        l_font_bitmap,
+        space_font_bitmap,
+        o_font_bitmap,
+        s_font_bitmap,
+        NULL
+    };
+
+    output_char(200, 20, 10, 7, 0x00ff0000, h_fat_font_bitmap);
+    int start_pos = 40;
+    for(int i = 0, font_spacing = 0; i < 6; i++, font_spacing += 8) {
+        if(wlc_msg[i] == space_font_bitmap)
+            output_char(start_pos + font_spacing, 55, 8, 7, 0x00535f46, wlc_msg[i]);
+        else
+            output_char(start_pos + font_spacing, 55, 8, 7, 0x00000000, wlc_msg[i]);
+    }
 
     // fsl_cli();
+}
+
+public fn output_char(int at_x, int at_y, int width, int height, u32 color, u64 *bitmap)
+{
+    int bitcount = 0;
+    for(int y = at_y; y < at_y + height; y++, bitcount++)
+	{
+		for(int x = at_x, bit = width; x < at_x + width; x++, bit--)
+			if((bitmap[bitcount] >> bit) & 0xFF != 0)
+				draw_pixel(0, 0, x, y, color);
+	}
 }
 
 public fn create_task_bar(fb_t fb)
 {
 	/* Taskbar */
-    // end = _FSLEFI_->resolution.y - 5;
-    for(int y = 0; y < _FSLEFI_->resolution.y; y++)
-        for(int x = 10; x < 40; x++)
+    int end = _FSLEFI_->resolution.y + 10;
+    for(int y = 20; y < end; y++)
+        for(int x = 50; x < 100; x++)
             draw_pixel(0, 0, y, x, 0x00535f46);
+
+    /* Top Border */
+    for(int y = 20; y < end; y++)
+        for(int x = 50; x < 53; x++)
+            draw_pixel(0, 0, y, x, 0x00ff0000);
+
+    /* Bottom Border */
+    for(int y = 20; y < end; y++)
+        for(int x = 97; x < 100; x++)
+            draw_pixel(0, 0, y, x, 0x00ff0000);
+
+    /* Left Border */
+    for(int y = 20; y < 23; y++)
+        for(int x = 50; x < 100; x++)
+            draw_pixel(0, 0, y, x, 0x00ff0000);
+
+    /* Left Border */
+    for(int y = end - 3; y < end; y++)
+        for(int x = 50; x < 100; x++)
+            draw_pixel(0, 0, y, x, 0x00ff0000);
 }
 
 public fn clear_screen(fsl_efi *fsl, uint32_t color)
@@ -176,7 +221,7 @@ void draw_pixel(int at_x, int at_y, int x, int y, uint32_t color) {
 // {
 //     println(L"[ + ] USB Reading");
 
-//     EFI_BLOCK_IO_PROTOCOL *blk = usb_find_raw_block();
+//    EFI_BLOCK_IO_PROTOCOL *blk = usb_find_raw_block();
 //     if(!blk) {
 //         fsl_panic(L"[ - ] No raw USB block device found\n");
 //         return;
