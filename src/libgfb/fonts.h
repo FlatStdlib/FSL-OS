@@ -1,7 +1,7 @@
 #include "gfb.h"
 
 // 8x8 A Bitmap
-u64 a_font_bitmap[] = {
+static u64 a_font_bitmap[] = {
 	0b00011000,
 	0b00100100,
 	0b01000010,
@@ -12,7 +12,7 @@ u64 a_font_bitmap[] = {
 	0b00000000
 };
 
-u64 b_font_bitmap[] = {
+static u64 b_font_bitmap[] = {
     0b01111100,
     0b01000010,
     0b01000010,
@@ -23,7 +23,7 @@ u64 b_font_bitmap[] = {
     0b00000000
 };
 
-u64 c_font_bitmap[] = {
+static u64 c_font_bitmap[] = {
     0b01111110,
     0b01000000,
     0b01000000,
@@ -34,7 +34,7 @@ u64 c_font_bitmap[] = {
     0b00000000
 };
 
-u64 d_font_bitmap[] = {
+static u64 d_font_bitmap[] = {
     0b01111100,
     0b01000010,
     0b01000010,
@@ -45,7 +45,7 @@ u64 d_font_bitmap[] = {
     0b00000000
 };
 
-u64 e_font_bitmap[] = {
+static u64 e_font_bitmap[] = {
     0b01111110,
     0b01000000,
     0b01000000,
@@ -56,7 +56,7 @@ u64 e_font_bitmap[] = {
     0b00000000
 };
 
-u64 f_font_bitmap[] = {
+static u64 f_font_bitmap[] = {
     0b01111110,
     0b01000000,
     0b01000000,
@@ -67,7 +67,7 @@ u64 f_font_bitmap[] = {
     0b00000000
 };
 
-u64 g_font_bitmap[] = {
+static u64 g_font_bitmap[] = {
     0b01111110,
     0b01000010,
     0b01000000,
@@ -78,7 +78,7 @@ u64 g_font_bitmap[] = {
     0b00000000
 };
 
-u64 h_font_bitmap[] = {
+static u64 h_font_bitmap[] = {
     0b01000010,
     0b01000010,
     0b01000010,
@@ -89,7 +89,7 @@ u64 h_font_bitmap[] = {
     0b00000000
 };
 
-u64 i_font_bitmap[] = {
+static u64 i_font_bitmap[] = {
     0b01111100,
     0b00010000,
     0b00010000,
@@ -100,7 +100,7 @@ u64 i_font_bitmap[] = {
     0b00000000
 };
 
-u64 j_font_bitmap[] = {
+static u64 j_font_bitmap[] = {
     0b11111100,
     0b00010000,
     0b00010000,
@@ -111,7 +111,7 @@ u64 j_font_bitmap[] = {
     0b00000000
 };
 
-u64 k_font_bitmap[] = {
+static u64 k_font_bitmap[] = {
     0b10001000,
     0b10010000,
     0b10100000,
@@ -122,7 +122,7 @@ u64 k_font_bitmap[] = {
     0b00000000
 };
 
-u64 l_font_bitmap[] = {
+static u64 l_font_bitmap[] = {
     0b10000000,
     0b10000000,
     0b10000000,
@@ -133,7 +133,7 @@ u64 l_font_bitmap[] = {
     0b00000000
 };
 
-u64 m_font_bitmap[] = {
+static u64 m_font_bitmap[] = {
     0b10000010,
     0b11000110,
     0b10101010,
@@ -144,7 +144,7 @@ u64 m_font_bitmap[] = {
     0b00000000
 };
 
-u64 n_font_bitmap[] = {
+static u64 n_font_bitmap[] = {
     0b11000010,
     0b10100010,
     0b10010010,
@@ -155,7 +155,7 @@ u64 n_font_bitmap[] = {
     0b00000000
 };
 
-u64 o_font_bitmap[] = {
+static u64 o_font_bitmap[] = {
     0b01111100,
     0b10000010,
     0b10000010,
@@ -166,7 +166,7 @@ u64 o_font_bitmap[] = {
     0b00000000
 };
 
-u64 p_font_bitmap[] = {
+static u64 p_font_bitmap[] = {
     0b01111100,
     0b10000010,
     0b10000010,
@@ -177,7 +177,7 @@ u64 p_font_bitmap[] = {
     0b00000000
 };
 
-u64 q_font_bitmap[] = {
+static u64 q_font_bitmap[] = {
     0b01111100,
     0b10000010,
     0b10000010,
@@ -188,7 +188,7 @@ u64 q_font_bitmap[] = {
     0b00000001
 };
 
-u64 r_font_bitmap[] = {
+static u64 r_font_bitmap[] = {
     0b01111100,
     0b10000010,
     0b10000010,
@@ -199,7 +199,7 @@ u64 r_font_bitmap[] = {
     0b00000000
 };
 
-u64 s_font_bitmap[] = {
+static u64 s_font_bitmap[] = {
     0b01111110,
     0b10000000,
     0b10000000,
@@ -210,7 +210,7 @@ u64 s_font_bitmap[] = {
     0b00000000
 };
 
-u64 t_font_bitmap[] = {
+static u64 t_font_bitmap[] = {
     0b11111110,
     0b00010000,
     0b00010000,
@@ -221,7 +221,7 @@ u64 t_font_bitmap[] = {
     0b00000000
 };
 
-u64 u_font_bitmap[] = {
+static u64 u_font_bitmap[] = {
     0b10000010,
     0b10000010,
     0b10000010,
@@ -232,7 +232,7 @@ u64 u_font_bitmap[] = {
     0b00000000
 };
 
-u64 v_font_bitmap[] = {
+static u64 v_font_bitmap[] = {
     0b10000010,
     0b10000010,
     0b01000100,
@@ -243,7 +243,7 @@ u64 v_font_bitmap[] = {
     0b00000000
 };
 
-u64 w_font_bitmap[] = {
+static u64 w_font_bitmap[] = {
     0b10000010,
     0b10000010,
     0b10000010,
@@ -254,7 +254,7 @@ u64 w_font_bitmap[] = {
     0b00000000
 };
 
-u64 x_font_bitmap[] = {
+static u64 x_font_bitmap[] = {
     0b10000010,
     0b01000100,
     0b00101000,
@@ -265,7 +265,7 @@ u64 x_font_bitmap[] = {
     0b00000000
 };
 
-u64 y_font_bitmap[] = {
+static u64 y_font_bitmap[] = {
     0b10000010,
     0b01000100,
     0b00101000,
@@ -276,7 +276,7 @@ u64 y_font_bitmap[] = {
     0b00000000
 };
 
-u64 z_font_bitmap[] = {
+static u64 z_font_bitmap[] = {
     0b11111110,
     0b00000010,
     0b00000100,
@@ -287,7 +287,7 @@ u64 z_font_bitmap[] = {
     0b00000000
 };
 
-u64 space_font_bitmap[] = {
+static u64 space_font_bitmap[] = {
     0b11111110,
     0b11111110,
     0b11111110,
@@ -298,7 +298,7 @@ u64 space_font_bitmap[] = {
     0b11111110
 };
 
-u64 hashtag_font_bitmap[] = {
+static u64 hashtag_font_bitmap[] = {
     0b01000100,
     0b01000100,
     0b11111110,
@@ -306,19 +306,5 @@ u64 hashtag_font_bitmap[] = {
     0b11111110,
     0b01000100,
     0001000100,
-    0b00000000
-};
-
-//10x8
-u64 h_fat_font_bitmap[] = {
-    0b01100110,
-    0b01100110,
-    0b01100110,
-    0b01100110,
-    0b01111110,
-    0b01111110,
-    0b01100110,
-    0b01100110,
-    0b01100110,
-    0b00000000
+    0b01000100
 };

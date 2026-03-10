@@ -2,6 +2,8 @@
 
 #include "libc/efi_libc.h"
 #include "libgfb/gfb.h"
+#include "libgfb/fonts.h"
+#include "libgfb/bold_font.h"
 #include "fs/fs.h"
 
 #include "../third_party_libs/fonts/test.h"

@@ -72,13 +72,17 @@ public fn EFIAPI Init_FSL(EFI_SYSTEM_TABLE *SystemTable, EFI_HANDLE ImageHandle)
         NULL
     };
 
-    output_char(200, 20, 10, 7, 0x00ff0000, h_fat_font_bitmap);
+    output_char(200, 60, 8, 10, 0x00000000, h_fat_font_bitmap);
+    output_char(208, 60, 8, 10, 0x00000000, e_fat_font_bitmap);
+    output_char(216, 60, 8, 10, 0x00000000, l_fat_font_bitmap);
+    output_char(225, 60, 8, 10, 0x00000000, l_fat_font_bitmap);
+    output_char(233, 60, 8, 10, 0x00000000, o_fat_font_bitmap);
     int start_pos = 40;
     for(int i = 0, font_spacing = 0; i < 6; i++, font_spacing += 8) {
         if(wlc_msg[i] == space_font_bitmap)
-            output_char(start_pos + font_spacing, 55, 8, 7, 0x00535f46, wlc_msg[i]);
+            output_char(start_pos + font_spacing, 60, 8, 7, 0x00535f46, wlc_msg[i]);
         else
-            output_char(start_pos + font_spacing, 55, 8, 7, 0x00000000, wlc_msg[i]);
+            output_char(start_pos + font_spacing, 60, 8, 7, 0x00000000, wlc_msg[i]);
     }
 
     // fsl_cli();
