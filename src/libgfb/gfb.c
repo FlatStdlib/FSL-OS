@@ -1,44 +1,74 @@
-#include "gfb.h"
 
-public fb_t init_fb(int width, int height)
+#include "gfb.h"            // Public
+#include "../fsl_efi.h"     // Private
+
+public void init_gfb(fsl_efi *fsl)
 {
-    fb_t fb = allocate(0, sizeof(_element));
+    EFI_GUID gEfiGraphicsOutputProtocolGuid =
+    { 0x9042a9de, 0x23dc, 0x4a38,
+      { 0x96, 0xfb, 0x7a, 0xde, 0xd0, 0x80, 0x51, 0x6a } };
+    EFI_STATUS Status;
+    EFI_GRAPHICS_OUTPUT_PROTOCOL *Gop;
 
-	fb->handle = allocate(0, sizeof(u16) * (width * height));
-	fb->max_pixels = width * height;
-    fb->size.x = width;
-    fb->size.y = height;
+    Status = gBS->LocateProtocol(
+        &gEfiGraphicsOutputProtocolGuid,
+        NULL,
+        (VOID **)&Gop
+    );
 
-	for(int i = 0; i < fb->max_pixels; i++) fb->handle[i] = create_pixel(39, 49, ' ');
-    return fb;
-}
+    if(EFI_ERROR(Status)) {
+        fsl_panic(L"GOP not found");
+        return;
+    }
 
-public u32 create_pixel(u8 fg, u8 bg, u8 pixel)
-{ return ((u32)fg << 24) | ((u32)bg << 16) | ((u32)pixel << 8); }
+    UINT32 BestMode = 0;
+    UINTN MaxPixels = 0;
 
-public fn add_pixel(fb_t fb, int x, int y, int fg, int bg, char c)
-{
-	fb->handle[x * fb->size.x + y] = create_pixel(fg, bg, c);
-}
+    for(UINT32 i = 0; i < Gop->Mode->MaxMode; i++) {
+        EFI_GRAPHICS_OUTPUT_MODE_INFORMATION *Info;
+        UINTN Size;
 
-public fn display_fb(fb_t fb)
-{
-	for(int i = 0; i < fb->max_pixels; i++)
-	{
-		CHAR16 COLOR[100] = {0};
-		str_append(COLOR, L"\x1b[");
-		str_append_int(COLOR, (fb->handle[i] >> 24) & 0xFF);
-		str_append(COLOR, L"m");
-		print(COLOR);
+        if(!EFI_ERROR(Gop->QueryMode(Gop, i, &Size, &Info))) {
+            UINTN Pixels = Info->HorizontalResolution * Info->VerticalResolution;
+            if (Pixels > MaxPixels) {
+                MaxPixels = Pixels;
+                BestMode = i;
+            }
+        }
+    }
 
-		memzero(COLOR, 99);
-		str_append(COLOR, L"\x1b[");
-		str_append_int(COLOR, (fb->handle[i] >> 16) & 0xFF);
-		str_append(COLOR, L"m");
-		print(COLOR);
+    Gop->SetMode(Gop, BestMode);
 
-		printc((fb->handle[i] >> 8) & 0xFF);
-	}
+    UINT32 *fb = (UINT32 *)Gop->Mode->FrameBufferBase;
+    fsl->framebuffer = fb;
+    UINTN pixels = Gop->Mode->FrameBufferSize / 4;
 
-	print(L"\x1b[39m\x1b[49m");
+    /* Might not be needed */
+    for(UINTN i = 0; i < pixels; i++)
+        fb[i] = 0x00000000;
+
+    if(__FSL_DEBUG__)
+    {
+        print(L"GOP Enabled, Resolution Size: "),
+        PrintU32(Gop->Mode->Info->HorizontalResolution), print(L":"),
+        PrintU32(Gop->Mode->Info->VerticalResolution), println(NULL);
+        print(L"RGB Format: "), PrintU32(Gop->Mode->Info->PixelFormat), println(NULL);
+    }
+
+    gST->ConOut->EnableCursor(gST->ConOut, FALSE);
+    gST->ConOut->ClearScreen(gST->ConOut);
+    fsl->resolution = (screen_size){ 
+        .x = Gop->Mode->Info->HorizontalResolution,
+        .y = Gop->Mode->Info->VerticalResolution
+    }; 
+    
+    /* Might not be needed */
+    UINTN stride = Gop->Mode->Info->PixelsPerScanLine;
+    vGop = Gop;
+    int base_x = 50;
+    int base_y = 50;
+
+    for(int row=0; row<8; row++)
+        for(int col=0; col<8; col++)
+            _FSLEFI_->framebuffer[(base_y + row) * stride + (base_x + col)] = 0x00FF0000;
 }

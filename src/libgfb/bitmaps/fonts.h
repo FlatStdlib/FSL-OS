@@ -3,7 +3,7 @@
 
 #define TOTAL_BOLD_FONTS 25
 
-static void *bold_fonts[][2] = {
+static void *bold_fonts[][3] = {
     {(void *)'a', a_font_bitmap, a_fat_font_bitmap},
     {(void *)'b', b_font_bitmap, b_fat_font_bitmap},
     {(void *)'c', c_font_bitmap, c_fat_font_bitmap},

@@ -1,4 +1,4 @@
-extern Init_FSL
+extern Init_EFI
 
 BITS 64
 DEFAULT REL
@@ -25,7 +25,7 @@ efi_main:
 
     mov rcx, r8
     mov rdx, r9
-    call Init_FSL
+    call Init_EFI
 
 .hang:
     hlt

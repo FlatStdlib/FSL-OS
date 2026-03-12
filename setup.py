@@ -36,7 +36,7 @@ for file in ALL_FILES:
         print(chk)
 
 """ Compile the boot loader """
-subprocess.getoutput("nasm -f win64 boot.asm -o boot.obj")
+subprocess.getoutput("nasm -f win64 boot/boot.asm -o boot.obj")
 
 chk = subprocess.getoutput("""lld-link \
     /subsystem:efi_application \

@@ -1,13 +1,11 @@
 #include "fsl_efi.h"
 
-EFI_BOOT_SERVICES *gBS;
-EFI_SYSTEM_TABLE *gST;
-EFI_HANDLE gImage;
-fsl_efi *_FSLEFI_ = NULL;
-u16 *SYSTEM_USER_NAME = NULL;
-EFI_GRAPHICS_OUTPUT_PROTOCOL *vGop;
-#define CPU_HZ 3000000000ULL
-#define BLINK_INTERVAL (CPU_HZ)
+EFI_BOOT_SERVICES *gBS  = NULL;
+EFI_SYSTEM_TABLE *gST   = NULL;
+EFI_HANDLE gImage       = {0};
+fsl_efi *_FSLEFI_       = NULL;
+u16 *SYSTEM_USER_NAME   = NULL;
+EFI_GRAPHICS_OUTPUT_PROTOCOL *vGop = NULL;
 
 CHAR16 BANNER[] = L"These commands are provided by the OS!\r\n"
                 L"     Name          Description\r\n"
@@ -21,21 +19,26 @@ CHAR16 BANNER[] = L"These commands are provided by the OS!\r\n"
                 L"     list          List All System Variables\r\n";
 
 public fn fsl_cli();
-__declspec(dllexport) public fn EFIAPI Init_FSL(EFI_SYSTEM_TABLE *SystemTable, EFI_HANDLE ImageHandle);
+__declspec(dllexport) public fn EFIAPI Init_EFI(EFI_SYSTEM_TABLE *SystemTable, EFI_HANDLE ImageHandle);
 
-public fn EFIAPI Init_FSL(EFI_SYSTEM_TABLE *SystemTable, EFI_HANDLE ImageHandle)
+public fn EFIAPI Init_EFI(EFI_SYSTEM_TABLE *SystemTable, EFI_HANDLE ImageHandle)
 {
     SystemTable->ConOut->OutputString(SystemTable->ConOut, L"[ + ] Initializing UEFI.....\r\n");
     gST = SystemTable;
     gImage = ImageHandle;
     gBS = SystemTable->BootServices;
+    Init_FSL();
+}
+
+public fn Init_FSL()
+{
     set_heap_sz(_HEAP_PAGE_ * 10);
     init_mem();
     _FSLEFI_ = allocate(0, sizeof(fsl_efi) + 1);
     _FSLEFI_->variables = init_map();
     _FSLEFI_->var_len = 0;
     _FSLEFI_->cursor = (_cordination){0};
-    switch_to_gui_mode(_FSLEFI_);
+    init_gfb(_FSLEFI_);
     
     println(L"[ + ] FSL EFI Initialized....");
     print(L"[ + ] Heap initialized with "), PrintU32(_HEAP_PAGE_ * 10), println(L" bytes...");
@@ -44,43 +47,17 @@ public fn EFIAPI Init_FSL(EFI_SYSTEM_TABLE *SystemTable, EFI_HANDLE ImageHandle)
     if(!_FSLEFI_->hdd_handle)
         fsl_panic(L"Unable to fetch main drive...!");
 
+    /* Saving this for later */
     // write_to_file(_FSLEFI_->hdd_handle, L"testing.txt", "Hello write from UEFI!", 22);
     
+
+    /* TODO; An actual PC user system */
     SYSTEM_USER_NAME = get_line(L"Username: ");
     if(!SYSTEM_USER_NAME)
         return;
 
-    print_args((string []){
-        L"\r\nWelcome to FSL OS, ",
-        (string)SYSTEM_USER_NAME, 
-        L"\r\n[ + ] Loading FSL CLI.....\r\n", 
-        NULL
-    });
-
     clear_screen(_FSLEFI_, 0x00000000);
-    init_fsl_theme(_FSLEFI_->fb);
-    u64 *wlc_msg[] = {
-        f_font_bitmap,
-        s_font_bitmap,
-        l_font_bitmap,
-        space_font_bitmap,
-        o_font_bitmap,
-        s_font_bitmap,
-        NULL
-    };
-
-    output_char(200, 60, 8, 10, 0x00000000, h_fat_font_bitmap);
-    output_char(208, 60, 8, 10, 0x00000000, e_fat_font_bitmap);
-    output_char(216, 60, 8, 10, 0x00000000, l_fat_font_bitmap);
-    output_char(225, 60, 8, 10, 0x00000000, l_fat_font_bitmap);
-    output_char(233, 60, 8, 10, 0x00000000, o_fat_font_bitmap);
-    int start_pos = 40;
-    for(int i = 0, font_spacing = 0; i < 6; i++, font_spacing += 8) {
-        if(wlc_msg[i] == space_font_bitmap)
-            output_char(start_pos + font_spacing, 60, 8, 7, 0x00535f46, wlc_msg[i]);
-        else
-            output_char(start_pos + font_spacing, 60, 8, 7, 0x00000000, wlc_msg[i]);
-    }
+    init_fsl_theme();
 }
 
 public fn output_char(int at_x, int at_y, int width, int height, u32 color, u64 *bitmap)
@@ -99,72 +76,6 @@ public fn clear_screen(fsl_efi *fsl, uint32_t color)
     UINTN pixels = fsl->resolution.x * fsl->resolution.y;
     for(UINTN i = 0; i < pixels; i++)
         fsl->framebuffer[i] = color;
-}
-
-public fn switch_to_gui_mode(fsl_efi *fsl)
-{
-    EFI_GUID gEfiGraphicsOutputProtocolGuid =
-    { 0x9042a9de, 0x23dc, 0x4a38,
-      { 0x96, 0xfb, 0x7a, 0xde, 0xd0, 0x80, 0x51, 0x6a } };
-    EFI_STATUS Status;
-    EFI_GRAPHICS_OUTPUT_PROTOCOL *Gop;
-
-    Status = gBS->LocateProtocol(
-        &gEfiGraphicsOutputProtocolGuid,
-        NULL,
-        (VOID **)&Gop
-    );
-
-    if(EFI_ERROR(Status)) {
-        fsl_panic(L"GOP not found");
-        return;
-    }
-
-    UINT32 BestMode = 0;
-    UINTN MaxPixels = 0;
-
-    for(UINT32 i = 0; i < Gop->Mode->MaxMode; i++) {
-        EFI_GRAPHICS_OUTPUT_MODE_INFORMATION *Info;
-        UINTN Size;
-
-        if(!EFI_ERROR(Gop->QueryMode(Gop, i, &Size, &Info))) {
-            UINTN Pixels = Info->HorizontalResolution * Info->VerticalResolution;
-            if (Pixels > MaxPixels) {
-                MaxPixels = Pixels;
-                BestMode = i;
-            }
-        }
-    }
-
-    Gop->SetMode(Gop, BestMode);
-
-    UINT32 *fb = (UINT32 *)Gop->Mode->FrameBufferBase;
-    fsl->framebuffer = fb;
-    UINTN pixels = Gop->Mode->FrameBufferSize / 4;
-
-    for(UINTN i = 0; i < pixels; i++)
-        fb[i] = 0x00000000;
-
-    print(L"GOP Enabled, Resolution Size: "),
-    PrintU32(Gop->Mode->Info->HorizontalResolution), print(L":"),
-    PrintU32(Gop->Mode->Info->VerticalResolution), println(NULL);
-    print(L"RGB Format: "), PrintU32(Gop->Mode->Info->PixelFormat), println(NULL);
-    fsl->resolution = (screen_size){ 
-        .x = Gop->Mode->Info->HorizontalResolution,
-        .y = Gop->Mode->Info->VerticalResolution
-    };
-
-    gST->ConOut->EnableCursor(gST->ConOut, FALSE);
-    gST->ConOut->ClearScreen(gST->ConOut); 
-    
-    UINTN stride = Gop->Mode->Info->PixelsPerScanLine;
-    vGop = Gop;
-    int base_x = 50;
-    int base_y = 50;
-
-    for(int row=0; row<8; row++)
-        for(int col=0; col<8; col++)
-            _FSLEFI_->framebuffer[(base_y + row) * stride + (base_x + col)] = 0x00FF0000; // red  
 }
 
 // 8x8 Bitfield

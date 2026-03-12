@@ -1,12 +1,10 @@
 #pragma once
 
+#include "fs/fs.h"
 #include "libc/efi_libc.h"
 #include "libgfb/gfb.h"
 #include "libgfb/bitmaps/fonts.h"
-#include "libgfb/bitmaps/bold_font.h"
-#include "fs/fs.h"
 
-#include "../third_party_libs/fonts/test.h"
 #ifndef _FSL_EFI_H
     #define _FSL_EFI_H
     #define _FSL_EFI_FS_H
@@ -16,6 +14,10 @@ extern EFI_HANDLE gImage;
 extern EFI_BOOT_SERVICES *gBS;
 extern EFI_SYSTEM_TABLE *gST;
 extern EFI_GRAPHICS_OUTPUT_PROTOCOL *Gop;
+extern EFI_GRAPHICS_OUTPUT_PROTOCOL *vGop;
+
+#define CPU_HZ 3000000000ULL
+#define BLINK_INTERVAL (CPU_HZ)
 
 typedef struct {
     int x, y;
@@ -61,7 +63,11 @@ typedef struct {
 } fsl_efi;
 
 extern fsl_efi *_FSLEFI_;
-public fn EFIAPI Init_FSL(EFI_SYSTEM_TABLE *SystemTable, EFI_HANDLE ImageHandle);
+
+// init.c
+public fn EFIAPI Init_EFI(EFI_SYSTEM_TABLE *SystemTable, EFI_HANDLE ImageHandle);
+public fn Init_FSL();
+
 public fn switch_to_gui_mode();
 void uefi_pixel_fn(int x, int y, void *color, void *user_data);
 public fn clear_screen(fsl_efi *fsl, uint32_t color);
@@ -77,6 +83,11 @@ public string  get_line(const string buffer);
 public fn fsl_cli();
 
 /*
+    [ libgfb/fb_api.c ]
+*/
+public void init_gfb(fsl_efi *fsl);
+
+/*
     [ libgfb/desktop/theme.c ]
 */
-public fn init_fsl_theme(fb_t fb);
+public fn init_fsl_theme();
