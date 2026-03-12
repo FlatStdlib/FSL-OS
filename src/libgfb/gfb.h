@@ -18,13 +18,6 @@ typedef _pdata e_size_t;
 typedef u32		pixel_t;
 typedef pixel_t *frame_t;
 
-struct winsize {
-    u16 			ws_row;
-   	u16 			ws_col;
-    u16 			ws_xpixel;
-    u16 			ws_ypixel;
-};
-
 typedef struct
 {
     location_t      location;   // Location Of the Element On Parent (X,Y)
@@ -38,7 +31,6 @@ typedef _element *shape_t;
 
 /* Framebuffer */
 typedef _element *fb_t;
-
 
 public fn clear_screen(uint32_t color);
 public fn output_char(int at_x, int at_y, int width, int height, u32 color, u64 *bitmap);

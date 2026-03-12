@@ -8,6 +8,7 @@
 public fn init_fsl_theme()
 {
     clear_screen(0x00000000);
+    
 	/* Taskbar */
     int end = _FSLEFI_->resolution.y;
     for(int y = 20; y < end; y++)
@@ -24,6 +25,7 @@ public fn init_fsl_theme()
         for(int x = 5; x < 55; x++)
             draw_pixel(0, 0, y, x, 0x00ff0000), draw_pixel(0, 0, at_y, x, 0x00ff0000);
 
+    /* Statistics */
     int start = _FSLEFI_->resolution.y + 30;
     for(int y = start; y < _FSLEFI_->resolution.y + 100; y++)
         for(int x = 5; x < _FSLEFI_->resolution.x - 30; x++)
@@ -46,6 +48,6 @@ public fn init_fsl_theme()
         else
             output_char(start_pos + font_spacing, 15, 8, 10, 0x00000000, wlc_msg[i]);
         
-        gBS->Stall(500000); // 50ms
+        gBS->Stall(500000);
     }
 }
