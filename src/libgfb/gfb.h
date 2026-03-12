@@ -15,7 +15,7 @@ typedef _pdata location_t;
 typedef _pdata e_size_t;
 
 /* BG << 24 | FG << 16 | PIXEL << 8 */
-typedef u32		pixel_t;
+typedef u64		pixel_t;
 typedef pixel_t *frame_t;
 
 typedef struct
@@ -34,6 +34,8 @@ typedef _element *fb_t;
 
 public fn clear_screen(uint32_t color);
 public fn output_char(int at_x, int at_y, int width, int height, u32 color, u64 *bitmap);
-void draw_pixel(int at_x, int at_y, int x, int y, uint32_t color);
+public fn draw_pixel(int at_x, int at_y, int x, int y, uint32_t color);
+
+public fn display_welcome_message();
 
 #endif

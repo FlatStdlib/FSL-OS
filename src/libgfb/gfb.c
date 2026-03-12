@@ -20,7 +20,7 @@ public fn clear_screen(uint32_t color)
         _FSLEFI_->framebuffer[i] = color;
 }
 
-void draw_pixel(int at_x, int at_y, int x, int y, uint32_t color) {
+public fn draw_pixel(int at_x, int at_y, int x, int y, uint32_t color) {
     UINTN stride = vGop->Mode->Info->PixelsPerScanLine;
     _FSLEFI_->framebuffer[(at_y + y) * stride + (at_x + x)] = color;
 }

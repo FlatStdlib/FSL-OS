@@ -59,7 +59,7 @@ public fn Init_FSL()
     init_fsl_theme();
 }
 
-public void init_gfb(fsl_efi *fsl)
+public fn init_gfb(fsl_efi *fsl)
 {
     EFI_GUID gEfiGraphicsOutputProtocolGuid =
     { 0x9042a9de, 0x23dc, 0x4a38,
@@ -128,6 +128,8 @@ public void init_gfb(fsl_efi *fsl)
     for(int row=0; row<8; row++)
         for(int col=0; col<8; col++)
             _FSLEFI_->framebuffer[(base_y + row) * stride + (base_x + col)] = 0x00FF0000;
+
+    display_welcome_message();
 }
 
 // public fn read_usb_drive()

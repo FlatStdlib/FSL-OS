@@ -77,7 +77,7 @@ public fn fsl_cli();
 /*
     [ libgfb/fb_api.c ]
 */
-public void init_gfb(fsl_efi *fsl);
+public fn init_gfb(fsl_efi *fsl);
 
 /*
     [ libgfb/desktop/theme.c ]
