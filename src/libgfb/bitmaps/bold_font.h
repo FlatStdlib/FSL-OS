@@ -3,8 +3,6 @@
     [ Single header file font bitmap lib ]
 
 */
-#include "gfb.h"
-
 static u64 a_fat_font_bitmap[] = {
 	0b00011000,
 	0b00111100,
@@ -88,7 +86,7 @@ static u64 g_fat_font_bitmap[] = {
     0b01111110,
     0b01100110,
     0b01100000,
-    0b011 1100,
+    0b01101110,
     0b01101110,
     0b01100110,
     0b01111110,
@@ -341,7 +339,7 @@ static u64 z_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 space_font_bitmap[] = {
+static u64 space_fat_font_bitmap[] = {
     0b11111110,
     0b11111110,
     0b11111110,

@@ -2,8 +2,8 @@
 
 #include "libc/efi_libc.h"
 #include "libgfb/gfb.h"
-#include "libgfb/fonts.h"
-#include "libgfb/bold_font.h"
+#include "libgfb/bitmaps/fonts.h"
+#include "libgfb/bitmaps/bold_font.h"
 #include "fs/fs.h"
 
 #include "../third_party_libs/fonts/test.h"
@@ -75,4 +75,8 @@ private inline UINT64 rdtsc(void);
 public fn blink_cursor();
 public string  get_line(const string buffer);
 public fn fsl_cli();
-public fn create_task_bar(fb_t fb);
+
+/*
+    [ libgfb/desktop/theme.c ]
+*/
+public fn init_fsl_theme(fb_t fb);

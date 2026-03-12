@@ -1,3 +1,0 @@
-/*
-    libgfb API
-*/

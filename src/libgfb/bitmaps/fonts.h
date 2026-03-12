@@ -1,6 +1,3 @@
-#include "gfb.h"
-
-// 8x8 A Bitmap
 static u64 a_font_bitmap[] = {
 	0b00011000,
 	0b00100100,

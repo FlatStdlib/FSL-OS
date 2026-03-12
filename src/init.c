@@ -50,18 +50,15 @@ public fn EFIAPI Init_FSL(EFI_SYSTEM_TABLE *SystemTable, EFI_HANDLE ImageHandle)
     if(!SYSTEM_USER_NAME)
         return;
 
-    print_args((string []){L"\r\nWelcome to FSL OS, ", (string)SYSTEM_USER_NAME, L"\r\n", NULL});
+    print_args((string []){
+        L"\r\nWelcome to FSL OS, ",
+        (string)SYSTEM_USER_NAME, 
+        L"\r\n[ + ] Loading FSL CLI.....\r\n", 
+        NULL
+    });
 
-    println(L"[ + ] Loading FSL CLI.....");
     clear_screen(_FSLEFI_, 0x00000000);
-
-    // vertical line
-    // int end = _FSLEFI_->resolution.x - 10;
-    // for(int x = 30; x < end; x++)
-    //     draw_pixel(0, 0, 40, x, 0x00211832);
-    
-    create_task_bar(_FSLEFI_->fb);
-
+    init_fsl_theme(_FSLEFI_->fb);
     u64 *wlc_msg[] = {
         f_font_bitmap,
         s_font_bitmap,
@@ -84,8 +81,6 @@ public fn EFIAPI Init_FSL(EFI_SYSTEM_TABLE *SystemTable, EFI_HANDLE ImageHandle)
         else
             output_char(start_pos + font_spacing, 60, 8, 7, 0x00000000, wlc_msg[i]);
     }
-
-    // fsl_cli();
 }
 
 public fn output_char(int at_x, int at_y, int width, int height, u32 color, u64 *bitmap)
@@ -97,35 +92,6 @@ public fn output_char(int at_x, int at_y, int width, int height, u32 color, u64 
 			if((bitmap[bitcount] >> bit) & 0xFF != 0)
 				draw_pixel(0, 0, x, y, color);
 	}
-}
-
-public fn create_task_bar(fb_t fb)
-{
-	/* Taskbar */
-    int end = _FSLEFI_->resolution.y + 10;
-    for(int y = 20; y < end; y++)
-        for(int x = 50; x < 100; x++)
-            draw_pixel(0, 0, y, x, 0x00535f46);
-
-    /* Top Border */
-    for(int y = 20; y < end; y++)
-        for(int x = 50; x < 53; x++)
-            draw_pixel(0, 0, y, x, 0x00ff0000);
-
-    /* Bottom Border */
-    for(int y = 20; y < end; y++)
-        for(int x = 97; x < 100; x++)
-            draw_pixel(0, 0, y, x, 0x00ff0000);
-
-    /* Left Border */
-    for(int y = 20; y < 23; y++)
-        for(int x = 50; x < 100; x++)
-            draw_pixel(0, 0, y, x, 0x00ff0000);
-
-    /* Left Border */
-    for(int y = end - 3; y < end; y++)
-        for(int x = 50; x < 100; x++)
-            draw_pixel(0, 0, y, x, 0x00ff0000);
 }
 
 public fn clear_screen(fsl_efi *fsl, uint32_t color)
