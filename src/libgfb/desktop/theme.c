@@ -11,22 +11,22 @@ public fn init_fsl_theme()
 	/* Taskbar */
     int end = _FSLEFI_->resolution.y;
     for(int y = 20; y < end; y++)
-        for(int x = 5; x < 100; x++)
+        for(int x = 5; x < 55; x++)
             draw_pixel(0, 0, y, x, 0x00535f46);
 
     /* Top/Bottom Border */
     for(int y = 20; y < end; y++)
-        for(int x = 50, at_x = 97; x < 53; x++, at_x++)
+        for(int x = 5, at_x = 53; x < 8; x++, at_x++)
             draw_pixel(0, 0, y, x, 0x00ff0000), draw_pixel(0, 0, y, at_x, 0x00ff0000);
 
     /* Left/Right Border */
     for(int y = 20, at_y = end - 3; y < 23; y++, at_y++)
-        for(int x = 50; x < 100; x++)
+        for(int x = 5; x < 55; x++)
             draw_pixel(0, 0, y, x, 0x00ff0000), draw_pixel(0, 0, at_y, x, 0x00ff0000);
 
     int start = _FSLEFI_->resolution.y + 30;
     for(int y = start; y < _FSLEFI_->resolution.y + 100; y++)
-        for(int x = 50; x < _FSLEFI_->resolution.x - 30; x++)
+        for(int x = 5; x < _FSLEFI_->resolution.x - 30; x++)
             draw_pixel(0, 0, y, x, 0x00ff0000);
 
     u64 *wlc_msg[] = {
@@ -45,5 +45,7 @@ public fn init_fsl_theme()
             output_char(start_pos + font_spacing, 15, 8, 10, 0x00535f46, wlc_msg[i]);
         else
             output_char(start_pos + font_spacing, 15, 8, 10, 0x00000000, wlc_msg[i]);
+        
+        gBS->Stall(500000); // 50ms
     }
 }
