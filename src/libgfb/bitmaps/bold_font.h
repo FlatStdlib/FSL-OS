@@ -349,27 +349,3 @@ static u64 space_fat_font_bitmap[] = {
     0b11111110,
     0b11111110
 };
-
-// 'a' - 'z'
-#define TOTAL_BOLD_FONTS 25
-
-static void *bold_fonts[][2] = {
-    {(void *)'h', h_fat_font_bitmap},
-    {(void *)'e', e_fat_font_bitmap},
-    {(void *)'l', l_fat_font_bitmap},
-    {(void *)'o', o_fat_font_bitmap}
-};
-
-static u64 *get_char_bitmap(char ch)
-{
-    for(int i = 0; i < TOTAL_BOLD_FONTS; i++)
-    {
-        
-        void **n = bold_fonts[i];
-        char chr = *(int *)n[0];
-        if(chr == ch)    
-            return bold_fonts[i][1];
-    }
-
-    return NULL;
-}

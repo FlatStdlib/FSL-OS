@@ -3,6 +3,7 @@
 */
 #include "../../fsl_efi.h"
 
+/* Create Taskbar and Statistic Gadge */
 public fn init_fsl_theme(fb_t fb)
 {
 	/* Taskbar */
@@ -30,4 +31,9 @@ public fn init_fsl_theme(fb_t fb)
     // for(int y = end - 3; y < end; y++)
     //     for(int x = 50; x < 100; x++)
     //         draw_pixel(0, 0, y, x, 0x00ff0000);
+
+    int start = _FSLEFI_->resolution.y = 200;
+    for(int y = start; y < _FSLEFI_->resolution.y; y++)
+        for(int x = 30; x < _FSLEFI_->resolution.x; x++)
+            draw_pixel(0, 0, y, x, 0x00ff0000);
 }

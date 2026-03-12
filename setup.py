@@ -1,9 +1,17 @@
 import os, subprocess
 
 ALL_FILES = []
+SOURCE_CODE_FILES = [
+    "ls -1 src/*.c",
+    "ls -1 src/libc/*.c",
+    "ls -1 src/fs/*.c",
+    "ls -1 src/libgfb/*.c",
+    "ls -1 src/libgfb/desktop/*.c",
+    "ls -1 src/tools/*.c"
+]
 
 """ GET C FILES """
-for dir in ["ls -1 src/*.c", "ls -1 src/libc/*.c", "ls -1 src/fs/*.c", "ls -1 src/libgfb/*.c", "ls -1 src/libgfb/desktop/*.c", "ls -1 src/tools/*.c"]:
+for dir in SOURCE_CODE_FILES:
     FILES = subprocess.getoutput(dir).strip().split("\n")
     for file in FILES: ALL_FILES.append(file)
 
