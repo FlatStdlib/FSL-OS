@@ -40,4 +40,8 @@ typedef _element *shape_t;
 typedef _element *fb_t;
 
 
+public fn clear_screen(uint32_t color);
+public fn output_char(int at_x, int at_y, int width, int height, u32 color, u64 *bitmap);
+void draw_pixel(int at_x, int at_y, int x, int y, uint32_t color);
+
 #endif

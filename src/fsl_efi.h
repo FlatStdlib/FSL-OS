@@ -68,18 +68,10 @@ extern fsl_efi *_FSLEFI_;
 public fn EFIAPI Init_EFI(EFI_SYSTEM_TABLE *SystemTable, EFI_HANDLE ImageHandle);
 public fn Init_FSL();
 
-public fn switch_to_gui_mode();
-void uefi_pixel_fn(int x, int y, void *color, void *user_data);
-public fn clear_screen(fsl_efi *fsl, uint32_t color);
-void draw_char(fsl_efi *fsl, int x, int y, uint8_t *bitmap, uint32_t color);
-public fn output_char(int at_x, int at_y, int width, int height, u32 color, u64 *bitmap);
-public fn add_font_bitmap(fb_t fb, int at_x, int at_y, int col, int rows, u64 bitmap[restrict rows]);
-void draw_pixel(int at_x, int at_y, int x, int y, uint32_t color);
+/* Temporary CLI SHIT */
 public fn read_usb_drive();
 public fn input_strip(const string buff, int *size);
-private inline UINT64 rdtsc(void);
-public fn blink_cursor();
-public string  get_line(const string buffer);
+public string get_line(const string buffer);
 public fn fsl_cli();
 
 /*

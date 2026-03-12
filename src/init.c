@@ -56,46 +56,78 @@ public fn Init_FSL()
     if(!SYSTEM_USER_NAME)
         return;
 
-    clear_screen(_FSLEFI_, 0x00000000);
     init_fsl_theme();
 }
 
-public fn output_char(int at_x, int at_y, int width, int height, u32 color, u64 *bitmap)
+public void init_gfb(fsl_efi *fsl)
 {
-    int bitcount = 0;
-    for(int y = at_y; y < at_y + height; y++, bitcount++)
-	{
-		for(int x = at_x, bit = width; x < at_x + width; x++, bit--)
-			if((bitmap[bitcount] >> bit) & 0xFF != 0)
-				draw_pixel(0, 0, x, y, color);
-	}
-}
+    EFI_GUID gEfiGraphicsOutputProtocolGuid =
+    { 0x9042a9de, 0x23dc, 0x4a38,
+      { 0x96, 0xfb, 0x7a, 0xde, 0xd0, 0x80, 0x51, 0x6a } };
+    EFI_STATUS Status;
+    EFI_GRAPHICS_OUTPUT_PROTOCOL *Gop;
 
-public fn clear_screen(fsl_efi *fsl, uint32_t color)
-{
-    UINTN pixels = fsl->resolution.x * fsl->resolution.y;
+    Status = gBS->LocateProtocol(
+        &gEfiGraphicsOutputProtocolGuid,
+        NULL,
+        (VOID **)&Gop
+    );
+
+    if(EFI_ERROR(Status)) {
+        fsl_panic(L"GOP not found");
+        return;
+    }
+
+    UINT32 BestMode = 0;
+    UINTN MaxPixels = 0;
+
+    for(UINT32 i = 0; i < Gop->Mode->MaxMode; i++) {
+        EFI_GRAPHICS_OUTPUT_MODE_INFORMATION *Info;
+        UINTN Size;
+
+        if(!EFI_ERROR(Gop->QueryMode(Gop, i, &Size, &Info))) {
+            UINTN Pixels = Info->HorizontalResolution * Info->VerticalResolution;
+            if (Pixels > MaxPixels) {
+                MaxPixels = Pixels;
+                BestMode = i;
+            }
+        }
+    }
+
+    Gop->SetMode(Gop, BestMode);
+
+    UINT32 *fb = (UINT32 *)Gop->Mode->FrameBufferBase;
+    fsl->framebuffer = fb;
+    UINTN pixels = Gop->Mode->FrameBufferSize / 4;
+
+    /* Might not be needed */
     for(UINTN i = 0; i < pixels; i++)
-        fsl->framebuffer[i] = color;
-}
+        fb[i] = 0x00000000;
 
-// 8x8 Bitfield
-// fb, position_x, position_y, bitmap width, bitmap height, bitmap
-public fn add_font_bitmap(fb_t fb, int at_x, int at_y, int col, int rows, u64 bitmap[restrict rows])
-{
-	int end_row = at_y + rows;
-	int end_col = at_x + col;
-	int bitcount = 0;
-	for(int y = at_y; y < end_row; y++, bitcount++)
-	{
-		for(int x = at_x, bit = 8; x < end_col; x++, bit--)
-			if((bitmap[bitcount] >> bit) & 0xFF != 0)
-				draw_pixel(0, 0, x, y, 0x00535f46);
-	}
-}
+    if(__FSL_DEBUG__)
+    {
+        print(L"GOP Enabled, Resolution Size: "),
+        PrintU32(Gop->Mode->Info->HorizontalResolution), print(L":"),
+        PrintU32(Gop->Mode->Info->VerticalResolution), println(NULL);
+        print(L"RGB Format: "), PrintU32(Gop->Mode->Info->PixelFormat), println(NULL);
+    }
 
-void draw_pixel(int at_x, int at_y, int x, int y, uint32_t color) {
-    UINTN stride = vGop->Mode->Info->PixelsPerScanLine;
-    _FSLEFI_->framebuffer[(at_y + y) * stride + (at_x + x)] = color;
+    gST->ConOut->EnableCursor(gST->ConOut, FALSE);
+    gST->ConOut->ClearScreen(gST->ConOut);
+    fsl->resolution = (screen_size){ 
+        .x = Gop->Mode->Info->HorizontalResolution,
+        .y = Gop->Mode->Info->VerticalResolution
+    }; 
+    
+    /* Might not be needed */
+    UINTN stride = Gop->Mode->Info->PixelsPerScanLine;
+    vGop = Gop;
+    int base_x = 50;
+    int base_y = 50;
+
+    for(int row=0; row<8; row++)
+        for(int col=0; col<8; col++)
+            _FSLEFI_->framebuffer[(base_y + row) * stride + (base_x + col)] = 0x00FF0000;
 }
 
 // public fn read_usb_drive()
@@ -138,42 +170,6 @@ public fn input_strip(const string buff, int *size)
 
     if(buff[*size] == '\n' || buff[*size] == '\r')
         buff[*size] = '\0', (*size)--;
-}
-
-static inline UINT64 rdtsc(void) {
-    UINT32 lo, hi;
-    __asm__ __volatile__("rdtsc" : "=a"(lo), "=d"(hi));
-    return ((UINT64)hi << 32) | lo;
-}
-
-public fn blink_cursor()
-{
-    UINTN CursorX = gST->ConOut->Mode->CursorColumn;
-	UINTN CursorY = gST->ConOut->Mode->CursorRow;
-	int visible = 0, last_toggle = 0;
-    /* Cursor */
-    UINT64 now = rdtsc();
-
-	if((now - last_toggle) >= BLINK_INTERVAL) {
-	    last_toggle = now;
-	    visible = !visible;
-
-	    if(visible) {
-	        gST->ConOut->SetCursorPosition(
-		        gST->ConOut,
-		        CursorX,
-		        CursorY - 1
-		    );
-	        print_color_text(EFI_WHITE, EFI_GREEN, L"_");
-	    } else {
-	        gST->ConOut->SetCursorPosition(
-		        gST->ConOut,
-		        CursorX,
-		        CursorY - 1
-		    );
-	        print_color_text(EFI_WHITE, EFI_BLACK, L" ");
-	    }
-    }
 }
 
 public string get_line(const string buffer)
