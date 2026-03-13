@@ -87,7 +87,7 @@ public fn display_welcome_message()
     int start_pos = 40;
     for(int i = 0, font_spacing = 0; i < 6; i++, font_spacing += 8) {
         if(wlc_msg[i] != space_font_bitmap)
-            wlc_output_char(start_pos + font_spacing, 15, 8, 10, 0x00000000, wlc_msg[i]);
+            wlc_output_char(start_pos + font_spacing, 15, 8, 10, 0x00ff0000, wlc_msg[i]);
         
         gBS->Stall(500000);
     }
