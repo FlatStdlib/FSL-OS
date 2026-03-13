@@ -63,7 +63,7 @@ public fn wlc_output_char(int at_x, int at_y, int width, int height, u32 color, 
     int bitcount = 0;
     for(int y = at_y; y < at_y + height; y++, bitcount++)
 	{
-        for(int n = 0; n < 2; n++, bitcount++)
+        for(int n = 0; n < 3; n++, bitcount++)
 		    for(int x = at_x, bit = width; x < at_x + width; x++, bit--)
 			    if((bitmap[bitcount] >> bit) & 0xFF != 0)
 				    draw_pixel(0, 0, x, y, color);
@@ -72,7 +72,7 @@ public fn wlc_output_char(int at_x, int at_y, int width, int height, u32 color, 
 
 public fn display_welcome_message()
 {
-    u64 *wlc_msg[] = {
+    u64 *boot_msg[] = {
         f_pretty_font,
         s_pretty_font,
         l_pretty_font,
@@ -86,8 +86,8 @@ public fn display_welcome_message()
 
     int start_pos = 40;
     for(int i = 0, font_spacing = 0; i < 6; i++, font_spacing += 8) {
-        if(wlc_msg[i] != space_font_bitmap)
-            wlc_output_char(start_pos + font_spacing, 15, 8, 10, 0x00ff0000, wlc_msg[i]);
+        if(boot_msg[i] != space_font_bitmap)
+            wlc_output_char(start_pos + font_spacing, 15, 8, 33, 0x001F85DE, boot_msg[i]);
         
         gBS->Stall(500000);
     }
