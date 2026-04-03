@@ -129,7 +129,7 @@ public fn init_gfb(fsl_efi *fsl)
         for(int col=0; col<8; col++)
             _FSLEFI_->framebuffer[(base_y + row) * stride + (base_x + col)] = 0x00000000;
 
-    display_welcome_message();
+    // display_welcome_message();
 }
 
 // public fn read_usb_drive()

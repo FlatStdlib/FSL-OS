@@ -1,7 +1,7 @@
 #include "../gfb.h"
 #include "../../fsl_efi.h"
 
-static u64 f_pretty_font[] = {
+private u64 f_pretty_font[] = {
     0b01111111, 0b11111111, 0b11110000,
     0b01111111, 0b11111111, 0b11110000,
     0b01110000, 0b00000000, 0b00000000,
@@ -15,7 +15,7 @@ static u64 f_pretty_font[] = {
     0b01110000, 0b00000000, 0b00000000
 };
 
-static u64 s_pretty_font[] = {
+private u64 s_pretty_font[] = {
     0b01111111, 0b11111111, 0b11110000,
     0b01111111, 0b11111111, 0b11110000,
     0b01110000, 0b00000000, 0b00000000,
@@ -29,7 +29,7 @@ static u64 s_pretty_font[] = {
     0b01111111, 0b11111111, 0b11110000
 };
 
-static u64 l_pretty_font[] = {
+private u64 l_pretty_font[] = {
     0b01100000, 0b00000000, 0b00000000,
     0b01100000, 0b00000000, 0b00000000,
     0b01100000, 0b00000000, 0b00000000,
@@ -44,7 +44,7 @@ static u64 l_pretty_font[] = {
 };
 
 
-static u64 o_pretty_font[] = {
+private u64 o_pretty_font[] = {
     0b00111111, 0b11111111, 0b11000000,
     0b00111111, 0b11111111, 0b11000000,
     0b11000000, 0b00000000, 0b00110000,

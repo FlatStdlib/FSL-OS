@@ -3,7 +3,7 @@
     [ Single header file font bitmap lib ]
 
 */
-static u64 a_fat_font_bitmap[] = {
+private u64 a_fat_font_bitmap[] = {
 	0b00011000,
 	0b00111100,
 	0b01100110,
@@ -16,7 +16,7 @@ static u64 a_fat_font_bitmap[] = {
 	0b00000000
 };
 
-static u64 b_fat_font_bitmap[] = {
+private u64 b_fat_font_bitmap[] = {
     0b01111100,
     0b01111110,
     0b01100110,
@@ -29,7 +29,7 @@ static u64 b_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 c_fat_font_bitmap[] = {
+private u64 c_fat_font_bitmap[] = {
     0b01111110,
     0b01111110,
     0b01100000,
@@ -42,7 +42,7 @@ static u64 c_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 d_fat_font_bitmap[] = {
+private u64 d_fat_font_bitmap[] = {
     0b01111100,
     0b01111110,
     0b01100110,
@@ -55,7 +55,7 @@ static u64 d_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 e_fat_font_bitmap[] = {
+private u64 e_fat_font_bitmap[] = {
     0b01111110,
     0b01111110,
     0b01100000,
@@ -68,7 +68,7 @@ static u64 e_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 f_fat_font_bitmap[] = {
+private u64 f_fat_font_bitmap[] = {
     0b01111110,
     0b01111110,
     0b01100000,
@@ -81,7 +81,7 @@ static u64 f_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 g_fat_font_bitmap[] = {
+private u64 g_fat_font_bitmap[] = {
     0b01111110,
     0b01111110,
     0b01100110,
@@ -94,7 +94,7 @@ static u64 g_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 h_fat_font_bitmap[] = {
+private u64 h_fat_font_bitmap[] = {
     0b01100110,
     0b01100110,
     0b01100110,
@@ -107,7 +107,7 @@ static u64 h_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 i_fat_font_bitmap[] = {
+private u64 i_fat_font_bitmap[] = {
     0b01111110,
     0b01111110,
     0b00011000,
@@ -120,7 +120,7 @@ static u64 i_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 j_fat_font_bitmap[] = {
+private u64 j_fat_font_bitmap[] = {
     0b11111110,
     0b11111110,
     0b00011000,
@@ -133,7 +133,7 @@ static u64 j_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 k_fat_font_bitmap[] = {
+private u64 k_fat_font_bitmap[] = {
     0b10000100,
     0b10001000,
     0b10010000,
@@ -146,7 +146,7 @@ static u64 k_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 l_fat_font_bitmap[] = {
+private u64 l_fat_font_bitmap[] = {
     0b11000000,
     0b11000000,
     0b11000000,
@@ -159,7 +159,7 @@ static u64 l_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 m_fat_font_bitmap[] = {
+private u64 m_fat_font_bitmap[] = {
     0b10000010,
     0b11000110,
     0b11101010,
@@ -172,7 +172,7 @@ static u64 m_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 n_fat_font_bitmap[] = {
+private u64 n_fat_font_bitmap[] = {
     0b11000110,
     0b11000110,
     0b11100110,
@@ -185,7 +185,7 @@ static u64 n_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 o_fat_font_bitmap[] = {
+private u64 o_fat_font_bitmap[] = {
     0b01111100,
     0b11111110,
     0b11000110,
@@ -198,7 +198,7 @@ static u64 o_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 p_fat_font_bitmap[] = {
+private u64 p_fat_font_bitmap[] = {
     0b01111100,
     0b11111110,
     0b11000110,
@@ -212,7 +212,7 @@ static u64 p_fat_font_bitmap[] = {
 };
 
 
-static u64 q_fat_font_bitmap[] = {
+private u64 q_fat_font_bitmap[] = {
     0b01111100,
     0b11111110,
     0b11000110,
@@ -225,7 +225,7 @@ static u64 q_fat_font_bitmap[] = {
     0b00000001
 };
 
-static u64 r_fat_font_bitmap[] = {
+private u64 r_fat_font_bitmap[] = {
     0b01111100,
     0b11111110,
     0b11000110,
@@ -237,7 +237,7 @@ static u64 r_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 s_fat_font_bitmap[] = {
+private u64 s_fat_font_bitmap[] = {
     0b01111110,
     0b11111110,
     0b11000000,
@@ -250,7 +250,7 @@ static u64 s_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 t_fat_font_bitmap[] = {
+private u64 t_fat_font_bitmap[] = {
     0b11111110,
     0b11111110,
     0b00011000,
@@ -263,7 +263,7 @@ static u64 t_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 u_fat_font_bitmap[] = {
+private u64 u_fat_font_bitmap[] = {
     0b11000110,
     0b11000110,
     0b11000110,
@@ -276,7 +276,7 @@ static u64 u_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 v_fat_font_bitmap[] = {
+private u64 v_fat_font_bitmap[] = {
     0b11000110,
     0b11000110,
     0b01101100,
@@ -287,7 +287,7 @@ static u64 v_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 w_fat_font_bitmap[] = {
+private u64 w_fat_font_bitmap[] = {
     0b11000110,
     0b11000110,
     0b11000110,
@@ -300,7 +300,7 @@ static u64 w_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 x_fat_font_bitmap[] = {
+private u64 x_fat_font_bitmap[] = {
     0b11000110,
     0b11000110,
     0b01101100,
@@ -313,7 +313,7 @@ static u64 x_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 y_fat_font_bitmap[] = {
+private u64 y_fat_font_bitmap[] = {
     0b11000110,
     0b11000110,
     0b01101100,
@@ -326,7 +326,7 @@ static u64 y_fat_font_bitmap[] = {
     0b00000000
 };
 
-static u64 z_fat_font_bitmap[] = {
+private u64 z_fat_font_bitmap[] = {
     0b11111110,
     0b11111110,
     0b00000011,

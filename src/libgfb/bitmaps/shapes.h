@@ -1,4 +1,4 @@
-static u64 circle[] = {
+private u64 circle[] = {
     0b00000000,
     0b00111000,
     0b01000100,

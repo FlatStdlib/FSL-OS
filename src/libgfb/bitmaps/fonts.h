@@ -3,7 +3,7 @@
 
 #define TOTAL_BOLD_FONTS 25
 
-static void *bold_fonts[][3] = {
+private void *bold_fonts[][3] = {
     {(void *)'a', a_font_bitmap, a_fat_font_bitmap},
     {(void *)'b', b_font_bitmap, b_fat_font_bitmap},
     {(void *)'c', c_font_bitmap, c_fat_font_bitmap},
@@ -33,7 +33,7 @@ static void *bold_fonts[][3] = {
     NULL
 };
 
-static u64 *get_char_bitmap(char ch)
+private u64 *get_char_bitmap(char ch)
 {
     for(int i = 0; i < TOTAL_BOLD_FONTS; i++)
         if(*(int *)((void **)bold_fonts[i])[0] == ch)    

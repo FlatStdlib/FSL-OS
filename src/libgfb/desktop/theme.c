@@ -10,7 +10,7 @@ public fn init_fsl_theme()
     clear_screen(0x00000000);
     
 	/* Taskbar */
-    int end = _FSLEFI_->resolution.y;
+    int end = _FSLEFI_->resolution.x - 20;
     for(int y = 20; y < end; y++)
         for(int x = 5; x < 55; x++)
             draw_pixel(0, 0, y, x, 0x00535f46);
@@ -26,10 +26,10 @@ public fn init_fsl_theme()
             draw_pixel(0, 0, y, x, 0x00ff0000), draw_pixel(0, 0, at_y, x, 0x00ff0000);
 
     /* Statistics */
-    int start = _FSLEFI_->resolution.y + 30;
-    for(int y = start; y < _FSLEFI_->resolution.y + 100; y++)
-        for(int x = 5; x < _FSLEFI_->resolution.x - 30; x++)
-            draw_pixel(0, 0, y, x, 0x00ff0000);
+    // int start = _FSLEFI_->resolution.y - 30;
+    // for(int y = start; y < _FSLEFI_->resolution.y + 100; y++)
+    //     for(int x = 5; x < _FSLEFI_->resolution.x - 30; x++)
+    //         draw_pixel(0, 0, y, x, 0x00ff0000);
 
     u64 *wlc_msg[] = {
         f_fat_font_bitmap,
