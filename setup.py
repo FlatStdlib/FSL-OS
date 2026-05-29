@@ -9,7 +9,7 @@ SOURCE_CODE_FILES = [
     "ls -1 src/libgfb/desktop/*.c",
     "ls -1 src/tools/*.c"
 ]
-
+print(subprocess.getoutput("clear"), end="\r")
 """ GET C FILES """
 for dir in SOURCE_CODE_FILES:
     FILES = subprocess.getoutput(dir).strip().split("\n")
