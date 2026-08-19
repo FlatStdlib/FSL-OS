@@ -1,12 +1,12 @@
 #include "efi_libc.h"
 
-#define _HEAP_PAGE_SZ_  4096
-int _HEAP_MULTIPLER_    = 2;
-int _HEAP_PAGE_         = _HEAP_PAGE_SZ_ * 2;
-heap_t _HEAP_                   = NULL;
-int used_mem                    = 0;
-int HEAP_DEBUG                  = 0;
-const int HEAP_META_SZ  = sizeof(__meta__);
+#define _HEAP_PAGE_SZ_      4096
+int _HEAP_MULTIPLER_        = 2;
+int _HEAP_PAGE_             = _HEAP_PAGE_SZ_ * 2;
+heap_t _HEAP_               = NULL;
+int used_mem                = 0;
+int HEAP_DEBUG              = 0;
+const int HEAP_META_SZ      = sizeof(__meta__);
 
 public int __get_total_mem_used__(void)
 { return used_mem; }

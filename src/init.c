@@ -114,53 +114,22 @@ public fn init_gfb(fsl_efi *fsl)
 
     gST->ConOut->EnableCursor(gST->ConOut, FALSE);
     gST->ConOut->ClearScreen(gST->ConOut);
-    fsl->resolution = (screen_size){ 
+    fsl->resolution = (screen_size){
         .x = Gop->Mode->Info->HorizontalResolution,
         .y = Gop->Mode->Info->VerticalResolution
-    }; 
-    
+    };
+
     /* Might not be needed */
     UINTN stride = Gop->Mode->Info->PixelsPerScanLine;
     vGop = Gop;
     int base_x = 50;
     int base_y = 50;
 
+    // Clear
     for(int row=0; row<8; row++)
         for(int col=0; col<8; col++)
             _FSLEFI_->framebuffer[(base_y + row) * stride + (base_x + col)] = 0x00000000;
-
-    // display_welcome_message();
 }
-
-// public fn read_usb_drive()
-// {
-//     println(L"[ + ] USB Reading");
-
-//    EFI_BLOCK_IO_PROTOCOL *blk = usb_find_raw_block();
-//     if(!blk) {
-//         fsl_panic(L"[ - ] No raw USB block device found\n");
-//         return;
-//     }
-    
-//     UINT64 total_bytes = blk->Media->BlockSize * ((UINT64)blk->Media->LastBlock + 1);
-//     UINT64 size_kb = total_bytes / 1024;
-//     UINT64 size_mb = total_bytes / (1024 * 1024);
-//     double size_gb = total_bytes / (1024.0 * 1024.0 * 1024.0);
-//     print(L"[ + ] Storage Size: "), PrintDouble(size_gb), print(L"\r\n");
-
-//     /* Debug */
-//     // VOID *buf = NULL;
-//     // EFI_STATUS st = usb_read_lba(blk, 0, 1, &buf);
-//     // if(EFI_ERROR(st)) {
-//     //     fsl_panic(L"[-] Read failed\r\n");
-//     //     return;
-//     // }
-
-//     // println(L"[+] LBA 0 dump (first 64 bytes):\n");
-//     // hex_dump((UINT8 *)buf, 64);
-
-//     // gBS->FreePool(buf);
-// }
 
 public fn input_strip(const string buff, int *size)
 {

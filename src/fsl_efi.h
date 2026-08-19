@@ -53,6 +53,9 @@ typedef struct {
     /* CLI Stuff */
     cursor_pos_t    cursor;
 
+    i8              cpu_cores;
+    bool            enabled;
+
     /* System Variables */
     map_t           variables;
     i32             var_len;
@@ -67,19 +70,10 @@ extern fsl_efi *_FSLEFI_;
 // init.c
 public fn EFIAPI Init_EFI(EFI_SYSTEM_TABLE *SystemTable, EFI_HANDLE ImageHandle);
 public fn Init_FSL();
+public fn init_gfb(fsl_efi *fsl);
 
 /* Temporary CLI SHIT */
 public fn read_usb_drive();
 public fn input_strip(const string buff, int *size);
 public string get_line(const string buffer);
 public fn fsl_cli();
-
-/*
-    [ libgfb/fb_api.c ]
-*/
-public fn init_gfb(fsl_efi *fsl);
-
-/*
-    [ libgfb/desktop/theme.c ]
-*/
-public fn init_fsl_theme();

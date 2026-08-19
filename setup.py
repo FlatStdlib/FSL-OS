@@ -1,15 +1,17 @@
-import os, subprocess
+import os, sys, subprocess
 
 ALL_FILES = []
 SOURCE_CODE_FILES = [
     "ls -1 src/*.c",
     "ls -1 src/libc/*.c",
     "ls -1 src/fs/*.c",
+    "ls -1 src/tools/*.c",
     "ls -1 src/libgfb/*.c",
-    "ls -1 src/libgfb/desktop/*.c",
-    "ls -1 src/tools/*.c"
 ]
-print(subprocess.getoutput("clear"), end="\r")
+
+if "--clear" in sys.argv:
+    print(subprocess.getoutput("clear"), end="\r")
+
 """ GET C FILES """
 for dir in SOURCE_CODE_FILES:
     FILES = subprocess.getoutput(dir).strip().split("\n")
@@ -42,7 +44,7 @@ chk = subprocess.getoutput("""lld-link \
     /subsystem:efi_application \
     /entry:efi_main \
     /nodefaultlib \
-    /out:build/BOOTX64.EFI \
+    /out:build/EFI/BOOT/BOOTX64.EFI \
     *.obj"""
 )
 
@@ -51,15 +53,24 @@ if chk:
 
 subprocess.getoutput("rm *.obj build/BOOTX64.lib")
 
-"""
-xorriso -as mkisofs \
-  -iso-level 3 \
-  -o output.iso \
-  -full-iso9660-filenames \
-  -volid "MY_EFI_ISO" \
-  -eltorito-alt-boot \
-  -e EFI/BOOT/BOOTX64.EFI \
-  -no-emul-boot \
-  -isohybrid-gpt-basdat \
-  ISO_ROOT/
-"""
+iso_cmds = [
+    "rm -rf iso esp.img fsl-os.iso",
+    "mkdir -p iso/EFI/BOOT",
+    "cp build/EFI/BOOT/BOOTX64.EFI iso/EFI/BOOT/BOOTX64.EFI",
+    "dd if=/dev/zero of=esp.img bs=1M count=64",
+    "mkfs.fat -F 32 esp.img",
+    "sudo mkdir -p /mnt/esp",
+    "sudo mount -o loop esp.img /mnt/esp",
+    "sudo mkdir -p /mnt/esp/EFI/BOOT",
+    "sudo cp build/EFI/BOOT/BOOTX64.EFI /mnt/esp/EFI/BOOT/BOOTX64.EFI",
+    "sudo umount /mnt/esp",
+    "cp esp.img iso/esp.img",
+    "xorriso -as mkisofs -R -J -V \"FSL-OS\" -e /esp.img -no-emul-boot -o fsl-os.iso iso/",
+    "rm esp.img"
+]
+
+if "--iso" in sys.argv:
+    for cmd in iso_cmds:
+        subprocess.run(cmd, shell = True)
+
+# if "--2usb" in sys.argv:
