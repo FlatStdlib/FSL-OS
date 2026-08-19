@@ -44,7 +44,7 @@ chk = subprocess.getoutput("""lld-link \
     /subsystem:efi_application \
     /entry:efi_main \
     /nodefaultlib \
-    /out:build/EFI/BOOT/BOOTX64.EFI \
+    /out:build/BOOTX64.EFI \
     *.obj"""
 )
 
@@ -57,13 +57,13 @@ iso_cmds = [
     "cp /usr/share/OVMF/OVMF_VARS_4M.fd ./OVMF_VARS.fd",
     "rm -rf iso esp.img fsl-os.iso",
     "mkdir -p iso/EFI/BOOT",
-    "cp build/EFI/BOOT/BOOTX64.EFI iso/EFI/BOOT/BOOTX64.EFI",
+    "cp build/BOOTX64.EFI iso/EFI/BOOT/BOOTX64.EFI",
     "dd if=/dev/zero of=esp.img bs=1M count=64",
     "mkfs.fat -F 32 esp.img",
     "sudo mkdir -p /mnt/esp",
     "sudo mount -o loop esp.img /mnt/esp",
     "sudo mkdir -p /mnt/esp/EFI/BOOT",
-    "sudo cp build/EFI/BOOT/BOOTX64.EFI /mnt/esp/EFI/BOOT/BOOTX64.EFI",
+    "sudo cp build/BOOTX64.EFI /mnt/esp/EFI/BOOT/BOOTX64.EFI",
     "sudo umount /mnt/esp",
     "cp esp.img iso/esp.img",
     "xorriso -as mkisofs -R -J -V \"FSL-OS\" -e /esp.img -no-emul-boot -o fsl-os.iso iso/",
