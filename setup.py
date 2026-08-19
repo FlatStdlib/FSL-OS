@@ -54,6 +54,7 @@ if chk:
 subprocess.getoutput("rm *.obj build/BOOTX64.lib")
 
 iso_cmds = [
+    "cp /usr/share/OVMF/OVMF_VARS_4M.fd ./OVMF_VARS.fd",
     "rm -rf iso esp.img fsl-os.iso",
     "mkdir -p iso/EFI/BOOT",
     "cp build/EFI/BOOT/BOOTX64.EFI iso/EFI/BOOT/BOOTX64.EFI",
