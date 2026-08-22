@@ -55,6 +55,7 @@ public fn Init_FSL()
     SYSTEM_USER_NAME = get_line(L"Username: ");
     if(!SYSTEM_USER_NAME)
         return;
+    print(L"[ + ] Screen Resolution: "), PrintU32(_FSLEFI_->resolution.x), print(L"/"), PrintU32(_FSLEFI_->resolution.y), println(NULL);
 
     init_fsl_theme();
 }

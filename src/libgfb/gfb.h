@@ -33,6 +33,8 @@ typedef _element *shape_t;
 typedef _element *fb_t;
 
 /* theme.c */
+public fn create_box(int x, int y, int w, int h, u64 bg);
+public fn place_bold_text(int x, int y, int BM_height, int BM_width, i64 fg, i64 bg, string text);
 public fn place_text(int x, int y, int BM_height, int BM_width, i64 fg, i64 bg, string text);
 public fn place_char_bitmap(int x, int y, int BM_height, int BM_width, i64 fg, i64 bg, u64 **text, i32 sz);
 public fn clear_screen(uint32_t color);
@@ -47,4 +49,5 @@ public fn init_fsl_theme();
 public fn display_os_name();
 public fn create_info_box();
 public fn get_cpu_info();
+public fn create_terminal();
 #endif

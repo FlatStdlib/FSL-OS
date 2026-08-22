@@ -67,7 +67,7 @@ iso_cmds = [
     "sudo umount /mnt/esp",
     "cp esp.img iso/esp.img",
     "xorriso -as mkisofs -R -J -V \"FSL-OS\" -e /esp.img -no-emul-boot -o fsl-os.iso iso/",
-    "rm esp.img"
+    "rm -rf esp.img iso"
 ]
 
 if "--iso" in sys.argv:
@@ -75,3 +75,5 @@ if "--iso" in sys.argv:
         subprocess.run(cmd, shell = True)
 
 # if "--2usb" in sys.argv:
+
+print("\x1b[32mISO Successfully Created!\x1b[39m")

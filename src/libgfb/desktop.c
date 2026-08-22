@@ -28,6 +28,7 @@ public fn init_fsl_theme()
     display_os_name();  
     create_info_box();
     get_cpu_info();
+    create_terminal();
 }
 
 public fn display_os_name()
@@ -72,21 +73,47 @@ public fn create_info_box()
         for(int x = start_x; x < end_x; x++)
             draw_pixel(0, 0, y, x, 0x00535f46);
 
-    place_text(25, 120, 8, 8, 0x00000000, 0x00535f46, L"[ info and settings ]");
+    place_bold_text(25, 145, 8, 8, 0x00000000, 0x00535f46, L"[ info and settings ]");
+    place_bold_text(25, 145, 8, 8, 0x00000000, 0x00535f46, L"screen size ");
+}
+
+public fn create_terminal()
+{
+    int start_x = (_FSLEFI_->resolution.x / 2) - 200;
+    int end_x = start_x + 400;
+
+    int start_y = (_FSLEFI_->resolution.y / 2) - 150;
+    int end_y = start_y + 300;
+
+    for(int y = start_y; y < end_y; y++)
+        for(int x = start_x; x < end_x; x++)
+            draw_pixel(0, 0, x, y, 0x00535f46);
+
+    // atx = _FSLEFI_->resolution.x / 2 - 250;
+    // aty = _FSLEFI_->resolution.y / 2 - 250;
+    // int top_box_endx = atx + 80, top_box_endy = aty + 80;
+    // for(int y = aty; y < top_box_endx; y++)
+    //     for(int x = atx; x < top_box_endy; x++)
+    //         draw_pixel(0, 0, y, x, 0x00ffffff);
+
+    for(int i = start_x; i < start_x + 150; i++)
+        draw_pixel(0, 0, start_x, i, 0x00ff0000);
+
+    place_bold_text(start_x + 35, start_y + 35, 8, 8, 0x00535f46, 0x00ffffff, L"terminal");
 }
 
 public fn get_cpu_info()
 {
-    place_text(25, 180, 8, 8, 0x00ff0000, 0x00535f46, L"cpu ");
+    place_bold_text(25, 180, 8, 8, 0x00ff0000, 0x00535f46, L"cpu ");
     register u32 r asm("eax") = 0;
     asm("cpuid");
-    register u32 eax asm("ebx");
-    register u32 ebx asm("edx");
+    register u32 ebx asm("ebx");
+    register u32 edx asm("edx");
     register u32 ecx asm("ecx");
 
     i8 vendor[13];
-    ((u32 *)vendor)[0] = eax;
-    ((u32 *)vendor)[1] = ebx;
+    ((u32 *)vendor)[0] = ebx;
+    ((u32 *)vendor)[1] = edx;
     ((u32 *)vendor)[2] = ecx;
 
     CHAR16 vendor16[13];
@@ -94,5 +121,21 @@ public fn get_cpu_info()
         vendor16[i] = (CHAR16)vendor[i];
 
     vendor16[12] = L'\0';
-    place_text(50, 180, 8, 8, 0x00ff0000, 0x00535f46, vendor16);
+    place_bold_text(50, 180, 8, 8, 0x00ff0000, 0x00535f46, vendor16);
+
+    /* Cores */
+    place_bold_text(25, 220, 8, 8, 0x00ff0000, 0x00535f46, L"cores ");
+    register u32 v asm("eax") = 1;
+    asm("cpuid");
+    register u32 eebx asm("ebx");
+
+    u32 cores = (eebx >> 16) & 0xff;
+    ((u32 *)vendor)[0] = (eebx >> 16) & 0xff;
+
+    string n = int_to_str(cores);
+
+    vendor16[5] = L'\0';
+    place_bold_text(50, 220, 8, 8, 0x00ff0000, 0x00535f46, n);
+
+    _pfree(n);
 }

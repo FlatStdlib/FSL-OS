@@ -2,6 +2,32 @@
 #include "gfb.h"            // Public
 #include "../fsl_efi.h"     // Private
 
+public fn create_box(int x, int y, int w, int h, u64 bg)
+{
+    int end_x = x + w;
+    int end_y = y + h;
+    for(int y = y; y < end_y; y++)
+    {
+        for(int x = x; x < end_x; x++)
+        {
+            draw_pixel(0, 0, x, y, bg);
+        }
+    }
+}
+
+public fn place_bold_text(int x, int y, int BM_height, int BM_width, i64 fg, i64 bg, string text)
+{
+    int len = str_len(text);
+    int start_pos = x;
+    for(int i = 0, font_spacing = 0; i < len; i++, font_spacing += 8) {
+        u64 *bm = get_bold_char_bitmap(text[i]);
+        if(bm == space_font_bitmap)
+            output_char(start_pos + font_spacing, y, BM_height, BM_width, bg, bm);
+        else
+            output_char(start_pos + font_spacing, y, BM_height, BM_width, fg, bm);
+    }
+}
+
 public fn place_text(int x, int y, int BM_height, int BM_width, i64 fg, i64 bg, string text)
 {
     int len = str_len(text);
